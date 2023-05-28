@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,6 +31,7 @@ public class BookController {
         model.addAttribute("categories",categoryService.getAllCategories());
         return "book/add";
     }
+
 //    @PostMapping("/add")
 //    public String addBook(@ModelAttribute("book")Book book){
 //        System.out.println(book);
@@ -43,11 +41,36 @@ public class BookController {
     @PostMapping("/add")
     public String addBook(@Valid @ModelAttribute("book")Book book, BindingResult bindingResult, Model model){
         if(bindingResult.hasErrors()){
-            model.addAttribute("book",new Book());
-            model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("categories",categoryService.getAllCategories());
             return "book/add";
         }
+        System.out.println(book);
         bookService.addBook(book);
+        return "redirect:/books";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editBookForm (@PathVariable("id") Long id,Model model){
+        Book editBook = bookService.getBookById(id);
+        model.addAttribute("book", editBook);
+        model.addAttribute("categories",categoryService.getAllCategories());
+
+        return "book/edit";
+    }
+    @PostMapping("/edit/{id}")
+    public String editBook(@PathVariable("id") Long id, @Valid @ModelAttribute("book") Book updatedBook, BindingResult result, Model model) {
+        if (updatedBook == null) {
+            return "redirect:/books";
+        }
+        bookService.updateBook(updatedBook);
+        return "redirect:/books";
+    }
+    @GetMapping("/delete/{id}")
+    public String deleteBook(@PathVariable("id") Long id) {
+        Book book = bookService.getBookById(id);
+        if (book != null) {
+            bookService.deleteBook(id);
+        }
         return "redirect:/books";
     }
 }

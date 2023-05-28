@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>EDIT BOOK</title>
+  <th:block th:insert="layout.html :: link-css"></th:block>
+</head>
+<body>
+<th:block th:insert="layout.html :: header"></th:block>
+<div class="container">
+  <h1>Edit Book</h1>
+  <form th:action="@{/books/edit/{id}(id=${book.id})}" th:object="${book}" method="post">
+    <div class="col-6 md-3">
+      <label for="title" class="form-label">Title: </label>
+      <input type="text" class="form-control" th:field="*{title}" id="title">
+    </div>
+    <div class="col-6 md-3">
+      <label for="author" class="form-label">Author: </label>
+      <input type="text" class="form-control" th:field="*{author}" id="author">
+    </div>
+    <div class="col-6 md-3">
+      <label for="price" class="form-label">Price: </label>
+      <input type="text" class="form-control" th:field="*{price}" id="price">
+    </div>
+    <div class="col-6 md-3">
+      <label for="category" class="form-label">Category: </label>
+      <select class="form-control" id="category" th:field="*{category.id}">
+        <option value="">--Select Category--</option>
+        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+  <br>
+  <a th:href="@{/books}">Back to list</a>
+</div>
+<th:block th:insert="layout :: footer"></th:block>
+</body>
+</html>
